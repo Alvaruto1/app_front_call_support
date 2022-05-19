@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { signUp } from "../user/userSlice";
+import { createCallLog } from "./callLogSlice";
 import CallLogsTable from "./CallLogsTable";
 import FormSearch from "./FormSearch";
 import CallLogModal from "./CallLogModal";
@@ -13,33 +13,27 @@ export default function CallLogPage() {
   const [user_type, setUserType] = useState("client");
   const [url_download, setUrlDownload] = useState("");
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [telephone, setTelephone] = useState("");
-  const [id, setId] = useState("");
-  const [document_type_id, setDocumentType] = useState("");
-  const role_name = "CallLoge";
-  const user = {
-    email,
-    password,
-    id,
-    document_type_id,
-    name,
-    surname,
-    telephone,
-    role_name
+  
+  const [client, setClient] = useState("");
+    const [category_id, setCategoryId] = useState("");
+  const [description, setDescription] = useState("");
+  const [start_date_time, setStartDateTime] = useState("");
+  const [end_date_time, setEndDateTime] = useState("");
+  
+  const call_log = {
+    client,
+    description,
+    start_date_time,
+    end_date_time,
+    category_id
   };
 
-  const user_functions = {
-    setEmail,
-    setPassword,
-    setName,
-    setSurname,
-    setTelephone,
-    setId,
-    setDocumentType,
+  const call_log_functions = {
+    setClient,
+    setDescription,
+    setStartDateTime,
+    setEndDateTime,
+    setCategoryId
   };
 
   const onClickDownload = () => {
@@ -87,9 +81,9 @@ export default function CallLogPage() {
       <CallLogModal
         title="Crear registro de llamada"
         modal_id="call_log_modal_create"
-        user={user}
-        user_functions={user_functions}
-        action_function={signUp}
+        call_log={call_log}
+        call_log_functions={call_log_functions}
+        action_function={createCallLog}
       ></CallLogModal>
       <CallLogEditModal
         title="Editar registro de llamada"

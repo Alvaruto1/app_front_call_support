@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   call_log: {
-    users: [],
+    call_log:{},
     call_logs:[],
     current_call_log: {},
   },
@@ -12,6 +12,9 @@ export const call_logSlice = createSlice({
   name: "call_log",
   initialState,
   reducers: {
+    create_call_log: (state, action) => {
+      state.call_log = { ...state.call_log, ...action.payload };
+    },
     get_call_logs_user_type: (state, action) => {
       state.call_log = { ...state.call_log, ...action.payload };
     },
@@ -21,13 +24,12 @@ export const call_logSlice = createSlice({
     delete_call_log: (state, action) => {
       state.call_log.call_logs = state.call_log.call_logs.filter(
         (call_log) =>
-          call_log.id !== action.payload.call_log_id &&
-          call_log.document_type_id !== action.payload.document_type
+          call_log.ticket !== action.payload.call_log_id
       );
     },
     edit_call_log: (state, action) => {
       state.call_log.call_logs = state.call_log.call_logs.map((call_log) =>
-        call_log.id === action.payload.user.id &&
+        call_log.ticket === action.payload.user.id &&
         call_log.document_type_id.id === action.payload.user.document_type_id.id
           ? { ...call_log, ...action.payload.user }
           : call_log
@@ -45,6 +47,7 @@ export const {
   delete_call_log,
   current_call_log,
   edit_call_log,
+  create_call_log
 } = call_logSlice.actions;
 
 export function getCallLogsUserType(user_type, okFunction, errorFunction) {
@@ -108,12 +111,11 @@ export function getCallLogs(user_type, document_type, id, okFunction, errorFunct
 }
 
 export function deleteCallLog(
-  document_type,
   call_log_id,
   okFunction,
   errorFunction
 ) {
-  const url = `http://localhost:5000/users/${document_type}/${call_log_id}`;
+  const url = `http://localhost:5000/call_logs/${call_log_id}`;
   const request = fetch(url, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
@@ -129,7 +131,7 @@ export function deleteCallLog(
           if (data.status === 500) {
             throw new Error(data.message);
           } else {
-            dispatch(delete_call_log({ document_type, call_log_id }));
+            dispatch(delete_call_log({ call_log_id }));
             okFunction();
             resolve(true);
           }
@@ -167,6 +169,41 @@ export function editCallLog(
             throw new Error(data.message);
           } else {
             dispatch(edit_call_log(data));
+            okFunction();
+            resolve(true);
+          }
+        })
+        .catch((error) => {
+          errorFunction(error);
+          reject(error);
+        });
+    });
+  };
+}
+
+export function createCallLog(
+  call_log,
+  okFunction,
+  errorFunction
+) {
+  const url = `http://localhost:5000/call_logs`;
+  const request = fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(call_log),
+    Authorization: `Bearer ${localStorage.getItem("jwt-token")}`,
+  });
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      request
+        .then((response) => {
+          return response.json();
+        })
+        .then((data) => {
+          if (data.status === 500) {
+            throw new Error(data.message);
+          } else {
+            dispatch(create_call_log(data));
             okFunction();
             resolve(true);
           }

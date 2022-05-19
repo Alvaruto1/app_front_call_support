@@ -24,7 +24,6 @@ export default function FormSearch(props) {
   };
   const onClickAll = (e) => {    
     e.preventDefault();
-    console.log(user_type, document_type_id, id, "datos seacrh");
     if(user_type === "all"){
       setActivedButton("all");
       dispatch(

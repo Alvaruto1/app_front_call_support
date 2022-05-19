@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
 import ActionsCRUD from "./ActionsCRUD";
-import { current_call_log, deleteCallLog } from "./callLogSlice";
+import { deleteCallLog } from "./callLogSlice";
 
 export default function CallLogsTable() {
   const call_logs = useSelector((state) => state.call_log.call_log.call_logs);
@@ -23,12 +23,9 @@ export default function CallLogsTable() {
       text: error,
     });
   };
-  const onClickDelete = (document_type, id) => {
-    dispatch(deleteCallLog(document_type, id, okFunction, errorFunction));
-  };
-  const onClikEdit = (call_log) => {
-      dispatch(current_call_log(call_log));
-    }
+  const onClickDelete = (call_log_id) => {
+    dispatch(deleteCallLog(call_log_id, okFunction, errorFunction));
+  }; 
   return (
     <table className="table container mt-5">
       <thead>
@@ -66,7 +63,6 @@ export default function CallLogsTable() {
                 delete_object={() =>
                   onClickDelete(call_log.ticket)
                 }
-                edit_object={() => onClikEdit(call_log)}
               ></ActionsCRUD>
             </td>
           </tr>
