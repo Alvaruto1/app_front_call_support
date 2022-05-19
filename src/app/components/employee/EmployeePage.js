@@ -82,14 +82,14 @@ export default function EmployeePage() {
         </a>
       </div>
       <EmployeeModal
-        title="Crear employeee"
+        title="Crear empleado"
         modal_id="employee_modal_create"
         user={user}
         user_functions={user_functions}
         action_function={signUp}
       ></EmployeeModal>
       <EmployeeEditModal
-        title="Editar employeee"
+        title="Editar empleado"
         modal_id="employee_modal_edit"
         action_function={editEmployee}
       ></EmployeeEditModal>
